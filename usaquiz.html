@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>U.S. Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/e/ea/American_flag.jpg');
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #007bff;
+        }
+
+        #question-container {
+            margin-bottom: 20px;
+        }
+
+        #question {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        #options {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #options li {
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #next-btn {
+            display: block;
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>U.S. Quiz</h1>
+        <div id="question-container">
+            <p id="question"></p>
+            <ul id="options"></ul>
+        </div>
+        <div id="feedback-container">
+            <p id="feedback"></p>
+            <button id="next-btn">Next Question</button>
+        </div>
+        <div id="result-container" style="display: none;">
+            <p id="result"></p>
+            <button id="redo-btn">Redo Quiz</button>
+        </div>
+        <div class="copyright">
+            &copy; Nacim's Company
+        </div>
+    </div>
+    
+    <script>
+        const questions = [
+            {
+                question: "What is the capital of the United States?",
+                options: ["New York City", "Los Angeles", "Washington D.C.", "Chicago"],
+                answer: "Washington D.C."
+            },
+            {
+                question: "What is the largest state in the United States?",
+                options: ["Alaska", "Texas", "California", "Florida"],
+                answer: "Alaska"
+            },
+            {
+                question: "What is the most recent state that became a part of the U.S.?",
+                options: ["Hawaii", "Alaska", "Puerto Rico", "Texas"],
+                answer: "Hawaii"
+            },
+            {
+                question: "How many states are there in the U.S.?",
+                options: ["50", "51", "49", "52"],
+                answer: "50"
+            },
+            {
+                question: "What colors are on the flag of the United States?",
+                options: ["Red, Yellow, Green", "Blue, Yellow, Green", "Red, White, Blue", "Blue, White, Red"],
+                answer: "Red, White, Blue"
+            },
+            {
+                question: "Who was the first president of the United States?",
+                options: ["Thomas Jefferson", "George Washington", "Abraham Lincoln", "John Adams"],
+                answer: "George Washington"
+            },
+            {
+                question: "Who is the president depicted on the dollar bill?",
+                options: ["Thomas Jefferson", "George Washington", "Abraham Lincoln", "Andrew Jackson"],
+                answer: "George Washington"
+            },
+            {
+                question: "What is the approximate population of the U.S.?",
+                options: ["200 million", "300 million", "400 million", "500 million"],
+                answer: "300 million"
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let answered = false;
+        const questionElement = document.getElementById('question');
+        const optionsElement = document.getElementById('options');
+        const feedbackElement = document.getElementById('feedback');
+        const nextButton = document.getElementById('next-btn');
+        const redoButton = document.getElementById('redo-btn');
+        const resultElement = document.getElementById('result-container');
+        const resultText = document.getElementById('result');
+
+        function showQuestion() {
+            const q = questions[currentQuestion];
+            questionElement.textContent = q.question;
+            optionsElement.innerHTML = '';
+            q.options.forEach(option => {
+                const li = document.createElement('li');
+                li.textContent = option;
+                li.addEventListener('click', () => {
+                    if (!answered) {
+                        checkAnswer(option);
+                    }
+                });
+                optionsElement.appendChild(li);
+            });
+            feedbackElement.textContent = '';
+            answered = false;
+        }
+
+        function checkAnswer(selectedOption) {
+            const correctAnswer = questions[currentQuestion].answer;
+            if (selectedOption === correctAnswer) {
+                feedbackElement.textContent = "Correct!";
+                feedbackElement.style.color = "green";
+                score++;
+            } else {
+                feedbackElement.textContent = "Incorrect. The correct answer is: " + correctAnswer;
+                feedbackElement.style.color = "red";
+            }
+            nextButton.style.display = "block";
+            answered = true;
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                showQuestion();
+            } else {
+                showResult();
+                nextButton.style.display = "none";
+            }
+        }
+
+        function redoQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            showQuestion();
+            resultElement.style.display = "none";
+            nextButton.style.display = "block";
+        }
+
+        function showResult() {
+            resultText.textContent = `You scored ${score} out of ${questions.length}.`;
+            resultElement.style.display = "block";
+        }
+
+        nextButton.addEventListener('click', nextQuestion);
+        redoButton.addEventListener('click', redoQuiz);
+
+        showQuestion();
+    </script>
+</body>
+</html>
+
